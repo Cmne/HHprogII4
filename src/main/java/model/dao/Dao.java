@@ -1,0 +1,94 @@
+package model.dao;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import model.Asiakas;
+
+public class Dao {
+	private Connection con=null;
+	private ResultSet rs = null;
+	private PreparedStatement stmtPrep=null; 
+	private String sql;
+	private String db ="Myynti.sqlite"; //name the correct db here
+
+	private Connection yhdista(){ //why does the function need to return connection though?
+    	Connection con = null; //wonder why this needs to be re-established
+    	String path = System.getProperty("catalina.base"); //catalina.base????
+    	path = path.substring(0, path.indexOf(".metadata")).replace("\\", "/"); //Eclipsessa
+    	//path += "/webapps/"; //Tuotannossa. Laita tietokanta webapps-kansioon
+    	String url = "jdbc:sqlite:" + path + db; //specify the full path to db with the jar
+    	try { //try to form a connection
+    		Class.forName("org.sqlite.JDBC"); //??
+	        con = DriverManager.getConnection(url); //??
+	        System.out.println("Dao: Yhteys avattu."); //for testing purposes
+	     }catch (Exception e){ //if connection failed
+	    	 System.out.println("Dao: Yhteyden avaus epäonnistui."); //for testing purposes
+	        e.printStackTrace(); //??
+	     }
+	     return con;
+	}
+
+	public ArrayList<Asiakas> listaaKaikki() { //READ method for getting everything
+		ArrayList<Asiakas> asiakkaat = new ArrayList<Asiakas>();
+		sql = "SELECT * FROM asiakkaat";
+		try {
+			con = yhdista();
+			if (con != null) {
+				stmtPrep = con.prepareStatement(sql);
+				rs = stmtPrep.executeQuery();
+				if (rs != null) {
+					while(rs.next()) {
+						Asiakas dude = new Asiakas();
+						dude.setAsiakas_id(rs.getInt(1));
+						dude.setEtunimi(rs.getString(2));
+						dude.setSukunimi(rs.getString(3));
+						dude.setPuhelin(rs.getString(4));
+						dude.setSposti(rs.getString(5));
+						asiakkaat.add(dude);
+					}
+				} else {
+					System.out.println("Kysely epäonnistui"); //for testing
+				}
+			}
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return asiakkaat;
+	}
+	
+	public ArrayList<Asiakas> listaaKaikki(String hakusana) { //READ method for getting only the searched stuff
+		ArrayList<Asiakas> asiakkaat = new ArrayList<Asiakas>();
+		sql = "SELECT * FROM asiakkaat WHERE etunimi LIKE ? or sukunimi LIKE ? or puhelin LIKE ? or sposti LIKE ?";
+		try {
+			con = yhdista();
+			if (con != null) {
+				stmtPrep = con.prepareStatement(sql);
+				stmtPrep.setString(1, "%" + hakusana + "%");
+				stmtPrep.setString(2, "%" + hakusana + "%");
+				stmtPrep.setString(3, "%" + hakusana + "%");
+				stmtPrep.setString(4, "%" + hakusana + "%");
+				rs = stmtPrep.executeQuery();
+				if (rs != null) {
+					while(rs.next()) {
+						Asiakas dude = new Asiakas();
+						dude.setAsiakas_id(rs.getInt(1));
+						dude.setEtunimi(rs.getString(2));
+						dude.setSukunimi(rs.getString(3));
+						dude.setPuhelin(rs.getString(4));
+						dude.setSposti(rs.getString(5));
+						asiakkaat.add(dude);
+					}
+				} else {
+					System.out.println("Kysely epäonnistui"); //for testing
+				}
+			}
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return asiakkaat;
+	}
+}
