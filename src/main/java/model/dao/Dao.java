@@ -22,7 +22,7 @@ public class Dao {
     	try { //try to form a connection
     		Class.forName("org.sqlite.JDBC"); //??
 	        con = DriverManager.getConnection(url); //??
-	        System.out.println("Dao: Yhteys avattu."); //for testing purposes
+//	        System.out.println("Dao: Yhteys avattu."); //for testing purposes
 	     }catch (Exception e){ //if connection failed
 	    	 System.out.println("Dao: Yhteyden avaus epäonnistui."); //for testing purposes
 	        e.printStackTrace(); //??
@@ -90,5 +90,40 @@ public class Dao {
 			e.printStackTrace();
 		}
 		return asiakkaat;
+	}
+	
+	public boolean lisaaAsiakas(Asiakas customer) {
+		boolean result = true;
+		sql = "INSERT INTO asiakkaat(etunimi, sukunimi, puhelin, sposti) VALUES(?, ?, ?, ?)";
+		try {
+			con = yhdista();
+			stmtPrep=con.prepareStatement(sql);
+			stmtPrep.setString(1, customer.getEtunimi());
+			stmtPrep.setString(2, customer.getSukunimi());
+			stmtPrep.setString(3, customer.getPuhelin());
+			stmtPrep.setString(4, customer.getSposti());
+			stmtPrep.executeUpdate();
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result=false;
+		}
+		return result;
+	}
+	
+	public boolean poistaAsiakas(String id) {
+		boolean result = true;
+		sql = "DELETE FROM asiakkaat WHERE asiakas_id = ?";
+		try {
+			con = yhdista();
+			stmtPrep=con.prepareStatement(sql);
+			stmtPrep.setString(1, id);
+			stmtPrep.executeUpdate();
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result=false;
+		}
+		return result;
 	}
 }
