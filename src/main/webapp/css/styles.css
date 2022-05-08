@@ -22,6 +22,19 @@ a {
 	text-decoration: none;
 }
 
+a.button {
+	background-color: #e6e6e6;
+	border-style: solid;
+	border-width: thin;
+	border-color: #999999;
+	border-radius: 3px;
+	color: black;
+	padding: 1px 4px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+}
+
 .right {
 	text-align: right;
 }

@@ -20,7 +20,6 @@
 				<th><input type="button" value="Hae" id="hakunappi"></th>
 			</tr>
 			<tr>
-<!--				<th>Asiakas_id</th> <!-- commented out for styling -->
 				<th>Etunimi</th>
 				<th>Sukunimi</th>
 				<th>Puhelin</th>
@@ -35,7 +34,6 @@
 		$(document).ready(function() {
 			haeAsiakkaat();
 			$("#hakunappi").click(function() {
-//				console.log($("#hakusana").val()); //for testing purposes
 				haeAsiakkaat();
 			});
 		});
@@ -46,16 +44,15 @@
 					type:"GET",
 					dataType:"json",
 					success:function(result) {
-//				console.log(result); //for testing
 				$.each(result.asiakkaat, function(i, field) {
 					var htmlStr;
 					htmlStr += "<tr id='rivi_" + field.asiakas_id + "'>";
-//					htmlStr += "<td>" + field.asiakas_id + "</td>"; //commented out for styling
 					htmlStr += "<td>" + field.etunimi + "</td>";
 					htmlStr += "<td>" + field.sukunimi + "</td>";
 					htmlStr += "<td>" + field.puhelin + "</td>";
 					htmlStr += "<td>" + field.sposti + "</td>";
-					htmlStr += "<td><input type='button' value='Poista' id='delete' onclick=poista('" + field.asiakas_id + "')></td>";
+					htmlStr += "<td><a class='button' href='muutaasiakas.jsp?asiakas_id=" + field.asiakas_id + "'>Muuta</a>&nbsp"
+					htmlStr += "<input type='button' value='Poista' id='delete' onclick=poista('" + field.asiakas_id + "')></td>";
 					htmlStr += "</tr>";
 					$("#listaus tbody").append(htmlStr);
 				});
@@ -64,7 +61,6 @@
 		
 		function poista(asiakas_id) {
 			if (confirm("Poista asiakas " + asiakas_id + "?")) {
-//				console.log("Poista " + asiakas_id); //for testing purposes
 				$.ajax({url: "asiakkaat/" + asiakas_id,
 						type: "DELETE",
 						dataType: "json",

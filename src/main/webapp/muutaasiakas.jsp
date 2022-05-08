@@ -8,7 +8,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/styles.css">
-	<title>Et‰teht‰v‰t 5 HP</title>
+	<title>Et‰teht‰v‰t 6 HP</title>
 </head>
 <body>
 	<div>
@@ -32,7 +32,7 @@
 						<td><input type="text" name="sukunimi" id="sNimi"></input></td>
 						<td><input type="text" name="puhelin" id="puh"></input></td>
 						<td><input type="text" name="sposti" id="email"></input></td>
-						<td><input type="submit" id="tallenna" value="Lis‰‰"></input></td>
+						<td><input type="submit" id="tallenna" value="Hyv‰ksy"></input></td>
 					</tr>
 				</tbody>
 			</table>
@@ -65,7 +65,7 @@
 						maxlength: 40
 					}
 				},
-				messages: { //if invalid
+				messages: { //if invalid, what is user told
 					etunimi: {
 						required: "Puuttuu",
 						minlength: "Liian lyhyt",
@@ -89,22 +89,38 @@
 					}
 				},
 				submitHandler: function(form) { //if valid
-					lisaaTiedot();
+//					console.log("Valid"); //for testing purposes
+					paivitaTiedot();
 				}
-			});	
+			});
 		});
 		
-		function lisaaTiedot() {
+		var asiakas_id = requestURLParam("asiakas_id");
+		//GET asiakkaat/haeyksi/asiakas_id // haeyksi indicates changed requirements of doGet method
+		$.ajax({url:"asiakkaat/haeyksi/" + asiakas_id,
+			//data:formJsonStr,
+			type:"GET",
+			dataType:"json",
+			success:function(result) {
+				$("#eNimi").val(result.etunimi);
+				$("#sNimi").val(result.sukunimi);
+				$("#puh").val(result.puhelin);
+				$("#email").val(result.sposti);
+			}
+		});
+		
+		function paivitaTiedot() {
+//			console.log("paivitaTiedot()");
 			var formJsonStr = formDataJsonStr($("#tiedot").serializeArray()); //found in scripts/main.js
 			$.ajax({url:"asiakkaat",
 				data:formJsonStr,
-				type:"POST",
+				type:"PUT",
 				dataType:"json",
 				success:function(result) { //joko {"response:1"} = onnistui tai {"response:0"} = ep‰onnistui
 					if(result.response==0){
-						$("#ilmo").html("Asiakkaan lis‰‰minen ep‰onnistui.");
+						$("#ilmo").html("Asiakkaan p‰ivitt‰minen ep‰onnistui.");
 					} else if (result.response==1) {
-						$("#ilmo").html("Asiakkaan lis‰‰minen onnistui.");
+						$("#ilmo").html("Asiakkaan p‰ivitt‰minen onnistui.");
 						$("#etunimi", "#sukunimi", "#puhelin", "#sposti").val("");
 					}
 				}
