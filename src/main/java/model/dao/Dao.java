@@ -137,7 +137,8 @@ public class Dao {
 				if (rs.isBeforeFirst()) { //if there's any result
 					rs.next();
 					dude = new Asiakas();
-					dude.setEtunimi(rs.getString(2)); //note: in 1st place there's the asiakas_id
+					dude.setAsiakas_id(rs.getInt(1)); //handling asiakas_id
+					dude.setEtunimi(rs.getString(2));
 					dude.setSukunimi(rs.getString(3));
 					dude.setPuhelin(rs.getString(4));
 					dude.setSposti(rs.getString(5));

@@ -38,10 +38,12 @@ public class Asiakkaat extends HttpServlet {
 			String asiakas_id_str = pathInfo.replace("/haeyksi/", "");
 			int asiakas_id = Integer.parseInt(asiakas_id_str);
 			Asiakas gubbe = dao.etsiAsiakas(asiakas_id);
+			
 			if (gubbe == null) { //call 5)
 				strJSON = "{}"; //equals a null object
 			} else {
 				JSONObject JSON = new JSONObject();
+				JSON.put("asiakas_id", gubbe.getAsiakas_id()); //handling hidden primary key
 				JSON.put("etunimi", gubbe.getEtunimi());
 				JSON.put("sukunimi", gubbe.getSukunimi());
 				JSON.put("puhelin", gubbe.getPuhelin());
@@ -80,6 +82,7 @@ public class Asiakkaat extends HttpServlet {
 		System.out.println("Asiakkaat.doPut()"); //for testing purposes
 		JSONObject jsonObj = new JsonStrToObj().convert(request);
 		Asiakas customer = new Asiakas();
+		customer.setAsiakas_id(Integer.parseInt(jsonObj.getString("asiakas_id")));
 		customer.setEtunimi(jsonObj.getString("etunimi"));
 		customer.setSukunimi(jsonObj.getString("sukunimi"));
 		customer.setPuhelin(jsonObj.getString("puhelin"));

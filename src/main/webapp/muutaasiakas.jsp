@@ -13,7 +13,7 @@
 <body>
 	<div>
 		<form id="tiedot">
-			<table border="1">
+			<table border="1"> <!-- class="table"? -->
 				<thead>
 					<tr>
 						<th colspan="5"><a href="listaaasiakkaat.jsp">Takaisin listaukseen</a></th>
@@ -36,11 +36,28 @@
 					</tr>
 				</tbody>
 			</table>
+			<input type="hidden" name="asiakas_id" id="asiakas_id"> <!-- was used for whichever purpose? -->
 		</form>
 		<p id="ilmo"></p>
 	</div>
 	<script>
 		$(document).ready(function() {
+			
+			//moved following into $(document)
+			var asiakas_id = requestURLParam("asiakas_id");
+			//GET asiakkaat/haeyksi/asiakas_id // haeyksi indicates changed requirements of doGet method
+			$.ajax({url:"asiakkaat/haeyksi/" + asiakas_id,
+				type:"GET",
+				dataType:"json",
+				success:function(result) {
+					$("#eNimi").val(result.etunimi);
+					$("#sNimi").val(result.sukunimi);
+					$("#puh").val(result.puhelin);
+					$("#email").val(result.sposti);
+					$("#asiakas_id").val(result.asiakas_id); //added the handling of hidden asiakas_id
+				}
+			});
+			
 			$("#tiedot").validate({
 				rules: {
 					etunimi: {
@@ -93,20 +110,6 @@
 					paivitaTiedot();
 				}
 			});
-		});
-		
-		var asiakas_id = requestURLParam("asiakas_id");
-		//GET asiakkaat/haeyksi/asiakas_id // haeyksi indicates changed requirements of doGet method
-		$.ajax({url:"asiakkaat/haeyksi/" + asiakas_id,
-			//data:formJsonStr,
-			type:"GET",
-			dataType:"json",
-			success:function(result) {
-				$("#eNimi").val(result.etunimi);
-				$("#sNimi").val(result.sukunimi);
-				$("#puh").val(result.puhelin);
-				$("#email").val(result.sposti);
-			}
 		});
 		
 		function paivitaTiedot() {
